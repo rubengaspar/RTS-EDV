@@ -2,9 +2,9 @@ import cv2
 import pandas as pd
 
 # Initialize video capture
-cap = cv2.VideoCapture('../data/blabla.mp4')
+cap = cv2.VideoCapture('../downloads/blabla.mp4')
 
-# DataFrame to store tracking data
+# DataFrame to store tracking downloads
 tracking_data = []
 
 # Function to detect players and ball (simplified for example)
@@ -39,6 +39,6 @@ while cap.isOpened():
 cap.release()
 cv2.destroyAllWindows()
 
-# Save tracking data
+# Save tracking downloads
 df = pd.DataFrame(tracking_data)
 df.to_csv('tracking_data.csv', index=False)
