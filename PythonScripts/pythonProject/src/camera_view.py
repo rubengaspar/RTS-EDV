@@ -1,5 +1,7 @@
+#camera_view.py
 import cv2
 from pose_detection import PoseDetector
+
 
 def main():
     detector = PoseDetector()
@@ -14,6 +16,7 @@ def main():
         faces, results, keypoints = detector.process_frame(frame)
         frame = detector.draw_keypoints(frame, faces, results, keypoints)
 
+        cv2.namedWindow('Face and Pose Detection', cv2.WINDOW_NORMAL)
         cv2.imshow('Face and Pose Detection', frame)
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
