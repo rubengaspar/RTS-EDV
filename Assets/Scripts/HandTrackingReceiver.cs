@@ -7,12 +7,13 @@ using System;
 
 public class HandTrackingReceiver : MonoBehaviour
 {
-    [SerializeField] public float multiplier = 10f;
+    [SerializeField] public float multiplier = 20f;
+    [SerializeField] public int hand_size = 21;
     
     private TcpClient client;
     private Thread clientThread;
     private bool isRunning = false;
-    private Dictionary<int, List<Vector3>> handKeypoints = new Dictionary<int, List<Vector3>>();
+    private List<HandPoint> handKeypoints = new List<HandPoint>();
     public GameObject[] handObjects; // Assign hand objects in the Unity Editor
 
     void Start()
@@ -24,20 +25,26 @@ public class HandTrackingReceiver : MonoBehaviour
 
     void Update()
     {
-        lock (handKeypoints)
+        lock(handKeypoints)
         {
-            foreach (var kvp in handKeypoints)
+            // Debug.Log("handKeypoints.Count: " + handKeypoints.Count);
+            if (handKeypoints.Count > 0)
             {
-                int handIndex = kvp.Key;
-                List<Vector3> keypoints = kvp.Value;
-
-                if (handIndex < handObjects.Length && keypoints.Count > 0)
+                
+                foreach (var handPoint in handKeypoints)
                 {
-                    // Update hand object transform
-                    
+                    if (handPoint.id < hand_size)
+                    {
+                        handObjects[handPoint.id].transform.position = new Vector3(handPoint.x, 
+                            handPoint.y, 
+                            handPoint.z) * -multiplier;
+                    }
                 }
             }
-        }
+        }    
+
+
+
     }
 
     private void ClientThread()
@@ -70,7 +77,8 @@ public class HandTrackingReceiver : MonoBehaviour
                         sb = new StringBuilder(allData.Substring(endOfMessageIndex + 1)); 
                         if (!string.IsNullOrEmpty(message))
                         {
-                            ParseMessage(message.Trim()); 
+                            ParseMessage(message); 
+                            Thread.Sleep(100);
                         }
                     }
                 }
@@ -85,25 +93,18 @@ public class HandTrackingReceiver : MonoBehaviour
 
     private void ParseMessage(string message)
     {
-        Debug.Log("message: " + message);
+        // Debug.Log("message: " + message);
         lock (handKeypoints)
         {
             try
             {
-                var data = JsonUtility.FromJson<HandData>(message);
-                
-                Debug.Log("Hand Object: "+ data);
+                // Debug.Log("Trying to Deserialize message into data");
+                var wrapper = JsonUtility.FromJson<HandPointWrapper>("{\"handPoints\": " + message + '}');
                 handKeypoints.Clear();
-
-                for (int i = 0; i < data.hands.Count; i++)
-                {
-                    var keypoints = new List<Vector3>();
-                    foreach (var point in data.hands[i])
-                    {
-                        keypoints.Add(new Vector3(point.x, point.y, point.z) * multiplier);
-                    }
-                    handKeypoints[i] = keypoints;
-                }
+                handKeypoints = wrapper.handPoints;
+                // Debug.Log("Successfully Deserialized");
+                // Debug.Log("Hand Object: "+ wrapper);
+                
             }
             catch (Exception e)
             {
@@ -113,43 +114,23 @@ public class HandTrackingReceiver : MonoBehaviour
         }
     }
 
-[Serializable]
-public class HandData
-{
-    public List<List<HandPoint>> hands;
-
-    public override string ToString()
+    [Serializable]
+    public class HandPointWrapper
     {
-        string allHands = "";
-        for (int i = 0; i < hands.Count; i++)
-        {
-            string handPoints = "";
-            for (int j = 0; j < hands[i].Count; j++)
-            {
-                handPoints += hands[i][j].ToString();
-                if(j != hands[i].Count - 1) 
-                    handPoints += ", ";
-            }
-
-            allHands += handPoints;
-            if(i != hands.Count - 1) 
-                allHands += " | ";
-        }
-
-        return $"HandData: {allHands}";
+        public List<HandPoint> handPoints;
     }
-}
 
     [Serializable]
     public class HandPoint
     {
+        public int id;
         public float x;
         public float y;
         public float z;
-        
+
         public override string ToString()
         {
-            return $"x:{x}, y:{y}, z:{z}";
+            return $"id: {id}, ({x}, {y}, z)";
         }
     }
 
