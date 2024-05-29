@@ -42,9 +42,6 @@ public class HandTrackingReceiver : MonoBehaviour
                 }
             }
         }    
-
-
-
     }
 
     private void ClientThread()
