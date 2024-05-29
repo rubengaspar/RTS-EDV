@@ -2,6 +2,9 @@
 import cv2
 import mediapipe as mp
 
+from src.hand_object import HandPoint
+
+
 class HandDetector:
     def __init__(self):
         # Initialize MediaPipe hands
@@ -12,8 +15,13 @@ class HandDetector:
         keypoints = []
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
-                hand_keypoints = [{'x': lm.x, 'y': lm.y, 'z': lm.z} for lm in hand_landmarks.landmark]
-                keypoints.append(hand_keypoints)
+
+                for id, point in enumerate(hand_landmarks.landmark):
+
+                    hand_point = HandPoint(id, point.x, point.y, point.z)
+
+                    keypoints.append(hand_point)
+
         return keypoints
 
     def process_frame(self, frame):

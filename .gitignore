@@ -1,17 +1,23 @@
-# Ignore everything in the Unity project directory
-/UnityProject/*
+# Ignore everything in the UnityProject directory
+UnityProject/*
 
-# Do not ignore the Assets directory
-!/UnityProject/Assets/
+# Do not ignore the Realtime-Visualization directory within UnityProject
+!UnityProject/Realtime-Visualization/
 
-# Ignore everything in the Assets directory
-/UnityProject/Assets/*
+# Ignore everything within Realtime-Visualization
+UnityProject/Realtime-Visualization/*
 
-# Do not ignore the Scripts directory inside Assets
-!/UnityProject/Assets/Scripts/
+# Do not ignore the Assets directory within Realtime-Visualization
+!UnityProject/Realtime-Visualization/Assets/
 
-# Do not ignore the files in Scripts directory
-!/UnityProject/Assets/Scripts/**
+# Ignore everything within Assets
+UnityProject/Realtime-Visualization/Assets/*
+
+# Do not ignore the Scripts directory within Assets
+!UnityProject/Realtime-Visualization/Assets/Scripts/
+
+# Do not ignore files within the Scripts directory
+!UnityProject/Realtime-Visualization/Assets/Scripts/**\
 
 # Other common ignores for Unity
 [Ll]ibrary/
