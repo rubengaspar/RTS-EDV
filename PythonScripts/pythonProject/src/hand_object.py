@@ -1,8 +1,5 @@
-
-
 class HandPoint:
-
-	def __innit__(self, id, x, y, z):
+	def __init__(self, id, x, y, z):
 		self.id = id
 		self.x = x
 		self.y = y
