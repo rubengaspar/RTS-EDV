@@ -17,7 +17,7 @@ UnityProject/Realtime-Visualization/Assets/*
 !UnityProject/Realtime-Visualization/Assets/Scripts/
 
 # Do not ignore files within the Scripts directory
-!UnityProject/Realtime-Visualization/Assets/Scripts/**\
+!UnityProject/Realtime-Visualization/Assets/Scripts/**
 
 # Other common ignores for Unity
 [Ll]ibrary/

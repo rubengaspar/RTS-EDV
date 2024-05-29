@@ -6,12 +6,13 @@ import socket
 import json
 from pose_detection import PoseDetector
 from hand_detection import HandDetector
+from src.hand_object import HandPointEncoder
 
 
 def send_to_unity(connection, data):
     # Convert the data to JSON
-    message = json.dumps(data) + "\n"
-    print("Sending JSON data to Unity:", message)
+    message = json.dumps(data, cls=HandPointEncoder) + "\n"
+    # print("Sending JSON data to Unity:", message)
     # Send the JSON data to Unity
     connection.sendall(message.encode('utf-8'))
 
@@ -52,7 +53,7 @@ def main():
 
         if status:
             send_to_unity(connection, hand_keypoints)
-            time.sleep(1)
+            time.sleep(0.1)
 
         # frame = pose_detector.draw_keypoints(frame, faces, pose_results, pose_keypoints)
         frame = hand_detector.draw_keypoints(frame, hand_results)
